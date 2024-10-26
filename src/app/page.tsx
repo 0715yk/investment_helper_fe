@@ -15,7 +15,8 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://52.21.37.128:8000/api/data'); // Use your API URL here
+        const response = await fetch('https://investment-helper.com/api/data');
+            
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
