@@ -1,7 +1,7 @@
 // components/Login.tsx
 "use client"; // This directive tells Next.js this is a client component
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { API_URL } from "../const";
 
 const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {

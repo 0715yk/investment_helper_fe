@@ -1,6 +1,7 @@
 // components/Header.tsx
 "use client"; // This directive tells Next.js this is a client component
 
+import Image from "next/image";
 import React from "react";
 
 interface HeaderProps {
@@ -21,7 +22,7 @@ const Header: React.FC<HeaderProps> = ({ krwBalance, onLogout }) => {
     <header className="w-full p-4 flex justify-between items-center bg-[#013597] text-white">
       {/* 좌측 BraveBIT 로고 */}
       <div className="flex items-center space-x-2">
-        <img src="/logo.svg" alt="BraveBIT Logo" className="h-8 md:h-10" />
+        <Image src="/logo.svg" alt="BraveBIT Logo" className="h-8 md:h-10" />
       </div>
 
       {/* 우측 KRW 잔액 및 로그아웃 버튼 */}

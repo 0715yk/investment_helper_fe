@@ -47,7 +47,7 @@ export default function Home() {
           setIsLoggedIn(true);
         }
       } catch (error) {
-        console.log("Not authenticated");
+        console.log("Not authenticated", error);
       } finally {
         setIsLoading(false); // 로딩 완료
       }
