@@ -1,61 +1,77 @@
 // pages/index.tsx
 "use client"; // This directive tells Next.js this is a client component
 
-import { useEffect, useState } from 'react';
-import Header from './components/Header';
-
-interface AccountInfo {
-  currency: string;
-  balance: string;
-  locked: string;
-  avg_buy_price: string;
-}
+import { useEffect, useState } from "react";
+import Header from "./components/Header";
+import Login from "./components/Login";
+import AccountInfo from "./components/AccountInfo";
+import { API_URL } from "./const";
 
 export default function Home() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [krwBalance, setKrwBalance] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태 추가
 
+  const setKrwBalanceFunction = (value: string) => {
+    setKrwBalance(value);
+  };
+
+  // 로그인 성공 핸들러
+  const handleLoginSuccess = () => {
+    setIsLoggedIn(true); // 로그인 상태 변경
+    setIsLoading(false); // 로딩 완료
+  };
+
+  // 로그아웃 핸들러
+  const handleLogout = async () => {
+    try {
+      await fetch(`${API_URL}/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+      setIsLoggedIn(false);
+      setKrwBalance(null); // 잔액 초기화
+    } catch (error) {
+      console.error("Failed to log out", error);
+    }
+  };
+
+  // 페이지 로드 시 로그인 상태 확인
   useEffect(() => {
-    const fetchAccountInfo = async () => {
+    const checkAuthStatus = async () => {
       try {
-        const response = await fetch("https://investment-helper.com/api/account-info");
-        if (!response.ok) {
-          throw new Error("Failed to fetch account information");
+        const response = await fetch(`${API_URL}/auth/status`, {
+          credentials: "include",
+        });
+        if (response.ok) {
+          setIsLoggedIn(true);
         }
-        const data = await response.json();
-        const krwAccount = data.data.find((account: AccountInfo) => account.currency === "KRW");
-
-        if (krwAccount) {
-          setKrwBalance(krwAccount.balance);
-        }
-      } catch (err: any) {
-        setError(err.message);
+      } catch (error) {
+        console.log("Not authenticated");
+      } finally {
+        setIsLoading(false); // 로딩 완료
       }
     };
-
-    fetchAccountInfo();
+    checkAuthStatus();
   }, []);
 
   return (
     <div>
-      {/* 헤더에 KRW 잔액 표시 */}
-      <Header krwBalance={krwBalance} />
-
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontFamily: 'Arial, sans-serif' }}>
-        <div style={{ textAlign: 'center', padding: '2rem', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', maxWidth: '400px', width: '100%', backgroundColor: '#f5f5f5' }}>
-          <h1 style={{ color: '#2c3e50', marginBottom: '1rem' }}>My Upbit Account</h1>
-          {error ? (
-            <p style={{ color: 'red' }}>Error: {error}</p>
-          ) : krwBalance ? (
-            <div>
-              <p style={{ fontSize: '1.25rem', color: '#34495e' }}>KRW Balance:</p>
-              <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#16a085' }}>{krwBalance}</p>
-            </div>
-          ) : (
-            <p>Loading...</p>
-          )}
+      {isLoading ? ( // 로딩 중일 때 스피너 표시
+        <div className="flex items-center justify-center h-screen">
+          <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
         </div>
-      </div>
+      ) : !isLoggedIn ? (
+        <Login onLoginSuccess={handleLoginSuccess} />
+      ) : (
+        <>
+          <Header krwBalance={krwBalance} onLogout={handleLogout} />
+          <AccountInfo
+            krwBalance={krwBalance}
+            setKrwBalance={setKrwBalanceFunction}
+          />
+        </>
+      )}
     </div>
   );
 }
