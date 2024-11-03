@@ -21,27 +21,27 @@ const AccountInfo: React.FC<AccountInfoProps> = ({
 }) => {
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchAccountInfo = async () => {
-      try {
-        const response = await fetch(`${API_URL}/account-info`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch account information");
-        }
-        const data = await response.json();
-        const krwAccount = data.data.find(
-          (account: AccountInfo) => account.currency === "KRW"
-        );
-
-        if (krwAccount) {
-          setKrwBalance(krwAccount.balance);
-        }
-      } catch (err: any) {
-        setError(err.message);
+  const fetchAccountInfo = async () => {
+    try {
+      const response = await fetch(`${API_URL}/account-info`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch account information");
       }
-    };
+      const data = await response.json();
+      const krwAccount = data.data.find(
+        (account: AccountInfo) => account.currency === "KRW"
+      );
 
-    fetchAccountInfo();
+      if (krwAccount) {
+        setKrwBalance(krwAccount.balance);
+      }
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  useEffect(() => {
+    void fetchAccountInfo();
   }, []);
 
   return (

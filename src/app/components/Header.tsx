@@ -21,14 +21,13 @@ const Header: React.FC<HeaderProps> = ({ krwBalance, onLogout }) => {
   return (
     <header className="sticky top-0 w-full p-4 flex justify-between items-center bg-[#013597] text-white z-50">
       {/* 좌측 BraveBIT 로고 */}
-      <div className="flex items-center space-x-2">
+      <div className="relative w-24 h-14 md:w-32 md:h-16 max-w-[128px] max-h-[64px]">
         <Image
           src="/logo.svg"
           alt="BraveBIT Logo"
-          layout="responsive"
-          width={100}
-          height={40}
-          className="w-16 h-auto md:w-24"
+          fill // 부모 요소 크기에 맞추기
+          priority // LCP 요소로 최우선 로드 설정
+          className="object-contain"
         />
       </div>
 

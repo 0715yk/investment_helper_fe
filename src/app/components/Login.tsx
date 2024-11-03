@@ -23,13 +23,19 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
       if (response.ok) {
         // 로그인 성공 시 쿠키에 JWT 토큰 저장 (백엔드에서 설정)
         const data = await response.json();
-        cookies.save("token", data.access_token, {
-          path: "/",
-          httpOnly: false,
-          secure: true,
-          sameSite: "strict",
-        });
-        onLoginSuccess(); // 로그인 성공 콜백
+
+        if (data.status === "success") {
+          cookies.save("token", data.access_token, {
+            path: "/",
+            httpOnly: false,
+            secure: true,
+            sameSite: "strict",
+          });
+          onLoginSuccess();
+        } else {
+          console.error("Received undefined token from the server");
+          setError("Login failed. Please try again.");
+        }
       } else {
         setError("Invalid credentials. Please try again.");
       }
