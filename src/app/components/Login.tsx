@@ -1,7 +1,7 @@
-// components/Login.tsx
 "use client"; // This directive tells Next.js this is a client component
 
 import { useState } from "react";
+import cookies from "react-cookies";
 import { API_URL } from "../const";
 
 const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
@@ -17,11 +17,19 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
-        credentials: "include", // 쿠키를 포함하여 서버와 통신
+        credentials: "include", // 서버에 쿠키를 포함해 요청
       });
 
       if (response.ok) {
-        onLoginSuccess(); // 로그인 성공 시 콜백 호출
+        // 로그인 성공 시 쿠키에 JWT 토큰 저장 (백엔드에서 설정)
+        const data = await response.json();
+        cookies.save("token", data.access_token, {
+          path: "/",
+          httpOnly: false,
+          secure: true,
+          sameSite: "strict",
+        });
+        onLoginSuccess(); // 로그인 성공 콜백
       } else {
         setError("Invalid credentials. Please try again.");
       }
@@ -31,40 +39,16 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        backgroundColor: "#013597",
-      }}
-    >
-      <div
-        style={{
-          width: "300px",
-          padding: "2rem",
-          backgroundColor: "#ffffff",
-          borderRadius: "8px",
-          boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
-          textAlign: "center",
-        }}
-      >
-        <h2 style={{ marginBottom: "1rem", color: "#333" }}>Login</h2>
+    <div className="flex justify-center items-center h-screen bg-[#013597]">
+      <div className="w-80 p-8 bg-white rounded-lg shadow-md text-center">
+        <h2 className="mb-4 text-gray-800 text-xl font-semibold">Login</h2>
 
         <input
           type="text"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "0.75rem",
-            marginBottom: "1rem",
-            borderRadius: "4px",
-            border: "1px solid #ddd",
-            fontSize: "1rem",
-          }}
+          className="w-full p-3 mb-4 rounded border border-gray-300 text-gray-900 text-base"
         />
 
         <input
@@ -72,33 +56,17 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "0.75rem",
-            marginBottom: "1rem",
-            borderRadius: "4px",
-            border: "1px solid #ddd",
-            fontSize: "1rem",
-          }}
+          className="w-full p-3 mb-4 rounded border border-gray-300 text-gray-900 text-base"
         />
 
         <button
           onClick={handleLogin}
-          style={{
-            width: "100%",
-            padding: "0.75rem",
-            borderRadius: "4px",
-            backgroundColor: "#013597",
-            color: "#ffffff",
-            fontSize: "1rem",
-            fontWeight: "bold",
-            cursor: "pointer",
-          }}
+          className="w-full p-3 rounded bg-[#013597] text-white font-bold hover:bg-[#012a7f] transition-colors"
         >
           Login
         </button>
 
-        {error && <p style={{ color: "red", marginTop: "1rem" }}>{error}</p>}
+        {error && <p className="text-red-500 mt-4">{error}</p>}
       </div>
     </div>
   );
