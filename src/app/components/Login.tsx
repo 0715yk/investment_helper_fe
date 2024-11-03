@@ -1,7 +1,6 @@
 "use client"; // This directive tells Next.js this is a client component
 
 import { useState } from "react";
-import cookies from "react-cookies";
 import { API_URL } from "../const";
 
 const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
@@ -17,20 +16,14 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
-        credentials: "include", // 서버에 쿠키를 포함해 요청
       });
 
       if (response.ok) {
-        // 로그인 성공 시 쿠키에 JWT 토큰 저장 (백엔드에서 설정)
+        // 로그인 성공 시 JWT 토큰을 응답에서 받아서 localStorage에 저장
         const data = await response.json();
 
-        if (data.status === "success") {
-          cookies.save("token", data.access_token, {
-            path: "/",
-            httpOnly: false,
-            secure: true,
-            sameSite: "strict",
-          });
+        if (data.status === "success" && data.token) {
+          localStorage.setItem("token", data.token); // JWT 토큰을 localStorage에 저장
           onLoginSuccess();
         } else {
           console.error("Received undefined token from the server");

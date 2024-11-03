@@ -23,10 +23,20 @@ const AccountInfo: React.FC<AccountInfoProps> = ({
 
   const fetchAccountInfo = async () => {
     try {
-      const response = await fetch(`${API_URL}/account-info`);
+      const token = localStorage.getItem("token"); // JWT 토큰 가져오기
+
+      const response = await fetch(`${API_URL}/account-info`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Authorization 헤더에 JWT 토큰 추가
+        },
+      });
+
       if (!response.ok) {
         throw new Error("Failed to fetch account information");
       }
+
       const data = await response.json();
       const krwAccount = data.data.find(
         (account: AccountInfo) => account.currency === "KRW"

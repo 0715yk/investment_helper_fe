@@ -23,28 +23,32 @@ export default function Home() {
   };
 
   // 로그아웃 핸들러
-  const handleLogout = async () => {
-    try {
-      await fetch(`${API_URL}/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
-      setIsLoggedIn(false);
-      setKrwBalance(null); // 잔액 초기화
-    } catch (error) {
-      console.error("Failed to log out", error);
-    }
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // 토큰 삭제
+    setIsLoggedIn(false);
+    setKrwBalance(null); // 잔액 초기화
   };
 
   // 페이지 로드 시 로그인 상태 확인
   useEffect(() => {
     const checkAuthStatus = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setIsLoading(false); // 토큰이 없으면 로딩 완료
+        return;
+      }
+
       try {
         const response = await fetch(`${API_URL}/auth/status`, {
-          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
+
         if (response.ok) {
           setIsLoggedIn(true);
+        } else {
+          localStorage.removeItem("token"); // 토큰이 유효하지 않으면 삭제
         }
       } catch (error) {
         console.log("Not authenticated", error);
@@ -52,6 +56,7 @@ export default function Home() {
         setIsLoading(false); // 로딩 완료
       }
     };
+
     checkAuthStatus();
   }, []);
 
