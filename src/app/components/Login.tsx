@@ -7,9 +7,11 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
     setError(null);
+    setIsLoading(true);
 
     try {
       const response = await fetch(`${API_URL}/login`, {
@@ -34,6 +36,8 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
       }
     } catch {
       setError("An error occurred. Please try again later.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -60,9 +64,16 @@ const Login = ({ onLoginSuccess }: { onLoginSuccess: () => void }) => {
 
         <button
           onClick={handleLogin}
-          className="w-full p-3 rounded bg-[#013597] text-white font-bold hover:bg-[#012a7f] transition-colors"
+          disabled={isLoading}
+          className="w-full p-3 rounded bg-[#013597] text-white font-bold hover:bg-[#012a7f] transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          Login
+          {isLoading ? (
+            <div className="flex items-center justify-center w-full h-full">
+              <div className="w-5 h-5 border-2 border-white border-dashed rounded-full animate-spin"></div>
+            </div>
+          ) : (
+            "Login"
+          )}
         </button>
 
         {error && <p className="text-red-500 mt-4">{error}</p>}
