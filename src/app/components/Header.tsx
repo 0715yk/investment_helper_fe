@@ -5,18 +5,18 @@ import Image from "next/image";
 import React from "react";
 
 interface HeaderProps {
-  krwBalance: string | null;
+  // krwBalance: string | null;
   onLogout: () => void; // 로그아웃 콜백 함수
 }
 
-const Header: React.FC<HeaderProps> = ({ krwBalance, onLogout }) => {
+const Header: React.FC<HeaderProps> = ({ onLogout }) => {
   // 원화 단위로 포맷팅하는 함수
-  const formatCurrency = (amount: string) => {
-    return new Intl.NumberFormat("ko-KR", {
-      style: "currency",
-      currency: "KRW",
-    }).format(parseFloat(amount));
-  };
+  // const formatCurrency = (amount: string) => {
+  //   return new Intl.NumberFormat("ko-KR", {
+  //     style: "currency",
+  //     currency: "KRW",
+  //   }).format(parseFloat(amount));
+  // };
 
   return (
     <header className="sticky top-0 w-full p-4 flex justify-between items-center bg-[#013597] text-white z-50">
@@ -33,13 +33,13 @@ const Header: React.FC<HeaderProps> = ({ krwBalance, onLogout }) => {
 
       {/* 우측 KRW 잔액 및 로그아웃 버튼 */}
       <div className="flex items-center space-x-4">
-        {krwBalance ? (
+        {/* {krwBalance ? (
           <p className="text-sm md:text-base font-semibold whitespace-nowrap">
             잔액: {formatCurrency(krwBalance)}
           </p>
         ) : (
           <p className="text-sm md:text-base">Loading...</p>
-        )}
+        )} */}
 
         {/* 로그아웃 버튼 */}
         <button
