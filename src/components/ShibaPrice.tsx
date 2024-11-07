@@ -31,7 +31,7 @@ const ShibaPrice = () => {
           if (!isComponentMounted) return;
           try {
             const data = JSON.parse(event.data);
-            console.log(data.price);
+
             setPrice(data.price);
           } catch (e) {
             console.error("Failed to parse message:", e);

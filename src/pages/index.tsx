@@ -1,13 +1,13 @@
-// pages/index.tsx
+// src/pages/index.tsx
 "use client"; // This directive tells Next.js this is a client component
 
 import { useEffect, useState } from "react";
-import Header from "./components/Header";
-import Login from "./components/Login";
-// import AccountInfo from "./components/AccountInfo";
-import { API_URL } from "./const";
-// import ShibaPrice from "./components/ShibaPrice";
-import PortfolioDisplay from "./components/PortfolioDisplay";
+import Header from "../components/Header";
+import Login from "../components/Login";
+// import AccountInfo from "../components/AccountInfo";
+import { API_URL } from "../const";
+// import ShibaPrice from "../components/ShibaPrice";
+import PortfolioDisplay from "../components/PortfolioDisplay";
 
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

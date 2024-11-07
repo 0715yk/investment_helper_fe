@@ -93,7 +93,7 @@ const PortfolioDisplay = () => {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-6 max-w-4xl mx-auto bg-upbit-blue min-h-screen">
       <h1 className="text-3xl font-bold mb-6 text-[#013597]">내 포트폴리오</h1>
 
       <div className="mb-8 bg-white p-6 rounded-lg shadow-md border border-gray-100">
